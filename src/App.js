@@ -1,9 +1,12 @@
 import React from 'react';
+import { BrowserRouter as Router, Route} from 'react-router-dom';
+import About from './components/pages/About'
 import Todos from './components/Todos';
 import AddTodos from './components/AddTodo';
 import Header from './components/layout/Header';
 import uuid from 'uuid';
 import './App.css';
+import {isTSImportType} from "@babel/types";
 
 class App extends React.Component {
 
@@ -34,7 +37,7 @@ class App extends React.Component {
 
   markComplete = (id) => {
     this.setState({todos: this.state.todos.map(todo => {
-        if (todo.id == id){
+        if (todo.id === id){
           todo.completed = !todo.completed;
         }
         
@@ -46,7 +49,7 @@ class App extends React.Component {
   deleteTodo = (id) => {
     this.setState({todos: 
       // using a spread oporator to copy everything there and retur a new array that satisfies the condition 
-      [...this.state.todos.filter(todo => todo.id != id) ]
+      [...this.state.todos.filter(todo => todo.id !== id) ]
     });
   }
 
@@ -63,15 +66,22 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <Header />
-        <AddTodos addTodo={this.addTodo}/>
-        <Todos 
-          todos={this.state.todos} 
-          markComplete={this.markComplete}
-          deleteTodo={this.deleteTodo}
-          />
-        </div>
+        <Router>
+          <div className="container">
+            <Header />
+
+            <Route exact path="/" render={props => (
+                <React.Fragment>
+                  <AddTodos addTodo={this.addTodo}/>
+                  <Todos todos={this.state.todos} markComplete={this.markComplete} deleteTodo={this.deleteTodo} />
+                </React.Fragment>
+            )} />
+
+            <Route path="/about" component={About}/>
+
+
+            </div>
+        </Router>
     )
   }
 }
